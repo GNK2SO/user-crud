@@ -1,6 +1,6 @@
 ## Overview
 
-Simple CRUD application using mainly Java EE, JPA and JSP.
+Simple CRUD application using Java EE, JPA and JSP.
 
 ### Running on docker
 
