@@ -2,7 +2,7 @@
 
 Simple CRUD application using mainly Java EE, JPA and JSP.
 
-### Running on docker?
+### Running on docker
 
 first generate the war file
 ```sh
