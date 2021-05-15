@@ -2,6 +2,11 @@
 
 Simple CRUD application using Java EE, JPA and JSP.
 
+## AWS URL
+```sh
+http://ec2-15-228-39-249.sa-east-1.compute.amazonaws.com:8080/manager/
+```
+
 ### Running on docker
 
 first generate the war file
@@ -16,7 +21,7 @@ sudo docker-compose up -d
 
 the application will be available on
 ```sh
-localhost:8085/manager/
+http://localhost:8085/manager/
 ```
 
 For run only the tests:
