@@ -1,2 +1,3 @@
-FROM tomcat:10.0-jdk11-openjdk-slim
+FROM tomcat
 COPY /target/manager.war /usr/local/tomcat/webapps/manager.war
+EXPOSE 8080
