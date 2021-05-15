@@ -8,18 +8,17 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="resources/css/style.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
-  <style>
-    .error {
-      color: red;
-    }
-  </style>
-
+  <script src="resources/js/validation.js"></script>
+  <script src="resources/js/auth.js"></script>
+  <script src="resources/js/user.js"></script>
+  <script src="resources/js/phone.js"></script>
 </head>
 
 <body>
@@ -57,15 +56,13 @@
               <c:out value="${user.email}" />
             </td>
             <td>
-              <button type="button" class="btn btn-primary shadow-sm mx-3" data-bs-toggle="modal"
-                data-bs-target="#details${user.id}">
+              <button type="button" class="btn btn-primary shadow-sm mx-3" data-bs-toggle="modal" data-bs-target="#details${user.id}">
                 <i class="fas fa-phone"></i>
               </button>
-              <button type="button" class="btn btn-primary shadow-sm mx-3"
-                onClick="editUser(${user.id}, '${user.name}', '${user.email}');">
+              <button type="button" class="btn btn-primary shadow-sm mx-3 modal-handler"  value="${user.id}">
                 <i class="fas fa-edit"></i>
               </button>
-              <button type="button" class="btn btn-primary shadow-sm mx-3" onClick='deleteUser(${user.id});'>
+              <button type="button" class="btn btn-primary shadow-sm mx-3 delete-button" value="${user.id}">
                 <i class="far fa-trash-alt"></i>
               </button>
             </td>
@@ -85,11 +82,9 @@
         </div>
         <div class="modal-body">
           <form id="create-user-form">
-            <input type="text" class="form-control mt-3" placeholder="Name" id="new-name" required minlength="3"
-              maxlength="24">
-            <input type="email" class="form-control mt-3" placeholder="Email" id="new-email" required maxlength="64">
-            <input type="password" class="form-control mt-3" placeholder="Password" id="new-password" required required
-              minlength="6" maxlength="16">
+            <input type="text" class="form-control mt-3" placeholder="Name" id="new-name" name="new_name">
+            <input type="email" class="form-control mt-3" placeholder="Email" id="new-email" name="new_email">
+            <input type="password" class="form-control mt-3" placeholder="Password" id="new-password" name="new_password">
           </form>
         </div>
         <div class="modal-footer">
@@ -100,7 +95,6 @@
     </div>
   </div>
 
-
   <div class="modal fade" id="edit">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -110,9 +104,8 @@
         </div>
         <div class="modal-body">
           <form id="edit-user-form">
-            <input type="hidden" id="edit-id" required>
-            <input type="text" class="form-control mt-3" placeholder="Name" id="edit-name" required minlength="3"
-              maxlength="24">
+            <input type="hidden" id="edit-id" name="edit-id">
+            <input type="text" class="form-control mt-3" placeholder="Name" id="edit-name" name="edit_name">
           </form>
         </div>
         <div class="modal-footer">
@@ -122,7 +115,6 @@
       </div>
     </div>
   </div>
-
 
   <c:forEach items="${users}" var="user">
     <div class="modal fade" id="details${user.id}">
@@ -144,11 +136,10 @@
                 </select>
               </div>
               <div class="col-auto">
-                <input type="text" class="form-control phone-number" id="phone-number-${user.id}"
-                  placeholder="New Phone" required>
+                <input type="text" class="form-control phone-number" placeholder="New Phone" id="phone-number-${user.id}" name="phone_number">
               </div>
               <div class="col-auto">
-                <button type="button" class="btn btn-primary mb-3" onClick="addPhone(${user.id});">Add Phone</button>
+                <button type="button" class="btn btn-primary mb-3 add-phone-button" value="${user.id}">Add Phone</button>
               </div>
             </form>
             <c:forEach items="${user.phones}" var="phone">
@@ -163,8 +154,7 @@
                     <c:out value="${phone.getFormatedNumber()}" />
                   </div>
                 </div>
-                <button type="button" class="btn btn-primary shadow-sm mx-3 col-1"
-                  onClick='deletePhone(${phone.id}, ${user.id});'>
+                <button type="button" class="btn btn-primary shadow-sm mx-3 col-1 delete-phone" value="${phone.id}-${user.id}">
                   <i class="far fa-trash-alt"></i>
                 </button>
               </div>
@@ -177,112 +167,7 @@
       </div>
     </div>
   </c:forEach>
-
-  <script>
-
-    $('.phone-number').mask('(00) 00000-0000')
-
-    $("#new-user-button").on('click', (event) => {
-      $("#create-user-form").validate();
-      if ($("#create-user-form").valid()) {
-        $.ajax({
-          type: 'POST',
-          url: "/manager/users?" + $.param({
-            "name": $("#new-name").val(),
-            "email": $("#new-email").val(),
-            "password": $("#new-password").val(),
-          }),
-        }).done(() => {
-          location.reload();
-        });
-      }
-    });
-
-
-    function editUser(id, name, email) {
-      $("#edit-id").val(id);
-      $("#edit-name").val(name);
-      $("#edit-email").val(email);
-      new bootstrap.Modal(document.getElementById('edit')).toggle();
-    }
-
-    $("#update-user-button").on('click', (event) => {
-      $("#edit-user-form").validate();
-      if ($("#create-user-form").valid()) {
-        $.ajax({
-          type: 'PUT',
-          url: "/manager/users?" + $.param({
-            "id": $("#edit-id").val(),
-            "name": $("#edit-name").val(),
-          }),
-        }).done(() => {
-          location.reload();
-        });
-      }
-    });
-
-    function deleteUser(id) {
-      $.ajax({
-        type: 'DELETE',
-        url: "/manager/users?id=" + id,
-      }).done(() => {
-        location.reload();
-      });
-    }
-
-    $("#logout-button").on('click', (event) => {
-      $.ajax({
-        type: 'DELETE',
-        url: "/manager/auth",
-      }).done(() => {
-        window.location.assign("/manager/");
-      });
-    });
-
-    function addPhone(userID) {
-
-      $("#add-phone-form-" + userID).validate();
-      if ($("#add-phone-form-" + userID).valid()) {
-
-        let phone = $("#phone-number-" + userID).val()
-        let phoneDigits = phone.replace(/\(|\)/g, "");
-
-        let ddd = phoneDigits.split(" ")[0];
-        let number = phoneDigits.split(" ")[1];
-
-        $.ajax({
-          type: 'POST',
-          url: "/manager/phones?" + $.param({
-            "id": $("#phone-id-" + userID).val(),
-            "type": $("#phone-type-" + userID).val(),
-            "ddd": ddd,
-            "number": number,
-          }),
-        }).done(() => {
-          $("#phone-number-" + userID).val("")
-          location.reload();
-        });
-
-      }
-
-
-    }
-
-    function deletePhone(phoneId, userId) {
-      $.ajax({
-        type: 'DELETE',
-        url: "/manager/phones?" + $.param({
-          "userId": userId,
-          "phoneId": phoneId,
-        }),
-      }).done(() => {
-        location.reload();
-      });
-    }
-
-  </script>
-
-
+  
 </body>
 
 </html>
