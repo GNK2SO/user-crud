@@ -13,6 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
   <script src="resources/js/validation.js"></script>
+  <script src="resources/js/toast.js"></script>
   <script src="resources/js/login.js"></script>
 </head>
 

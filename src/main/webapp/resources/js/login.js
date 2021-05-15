@@ -11,11 +11,11 @@ $(document).ready(function () {
         required: true,
         not_blank: true,
         not_whitespace: true,
-        rangelength: [6,16]
+        rangelength: [6, 16]
       }
     }
   }
-  
+
   $("#login-button").on('click', (event) => {
     $("#login-form").validate(loginFormValidation);
     if ($("#login-form").valid()) {
@@ -27,6 +27,8 @@ $(document).ready(function () {
         }),
       }).done(() => {
         window.location.assign("/manager/users");
+      }).fail((response) => {
+        $.snack('error', response.responseJSON.message, 3000);
       });
     }
   });
@@ -50,7 +52,7 @@ $(document).ready(function () {
         required: true,
         not_blank: true,
         not_whitespace: true,
-        rangelength: [6,16]
+        rangelength: [6, 16]
       }
     }
   }
@@ -58,26 +60,39 @@ $(document).ready(function () {
   $("#register-button").on('click', (event) => {
     $("#register-form").validate(registerFormValidation);
     if ($("#register-form").valid()) {
+      let name = $("#register-name").val();
+      let email = $("#register-email").val();
+      let password = $("#register-password").val();
       $.ajax({
         type: 'POST',
         url: "/manager/users?" + $.param({
-            "name": $("#register-name").val(),
-           "email": $("#register-email").val(),
-           "password": $("#register-password").val(),
+          "name": name,
+          "email": email,
+          "password": password,
         }),
       }).done(() => {
-        $.ajax({
-            type: 'POST',
-            url: "/manager/auth?" + $.param({
-             "email": $("#register-email").val(),
-             "password": $("#register-password").val(),
-            }),
-          }).done(() => {
-             window.location.assign("/manager/users");
-          });
+        $.snack('success', "sign up successfully", 3000);
+        authenticate(email, password);
+      }).fail((response) => {
+        $.snack('error', response.responseJSON.message, 3000);
       });
     }
   });
+
+  function authenticate(email, password) {
+    $.ajax({
+      type: 'POST',
+      url: "/manager/auth?" + $.param({
+        "email": email,
+        "password": password,
+      }),
+    }).done(() => {
+      window.location.assign("/manager/users");
+    }).fail((response) => {
+      $.snack('error', response.responseJSON.message, 3000);
+    });
+  }
+
 });
 
 
