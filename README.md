@@ -21,7 +21,7 @@ sudo docker-compose up -d
 
 the application will be available on
 ```sh
-http://localhost:8085/manager/
+http://localhost:8080/manager/
 ```
 
 For run only the tests:
