@@ -6,7 +6,9 @@ $(document).ready(function () {
             url: "/manager/auth",
         }).done(() => {
             window.location.assign("/manager/");
-        });
+        }).fail((response) => {
+          $.snack('error', response.responseJSON.message, 3000);
+      	});
     });
 
 });

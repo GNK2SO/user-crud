@@ -16,6 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
   <script src="resources/js/validation.js"></script>
+  <script src="resources/js/toast.js"></script>
   <script src="resources/js/auth.js"></script>
   <script src="resources/js/user.js"></script>
   <script src="resources/js/phone.js"></script>

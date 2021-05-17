@@ -40,6 +40,8 @@ $(document).ready(function () {
       }).done(() => {
         $("#phone-number-" + userID).val("")
         location.reload();
+      }).fail((response) => {
+        $.snack('error', response.responseJSON.message, 3000);
       });
 
     }
@@ -55,6 +57,8 @@ $(document).ready(function () {
       }),
     }).done(() => {
       location.reload();
+    }).fail((response) => {
+      $.snack('error', response.responseJSON.message, 3000);
     });
   });
 
